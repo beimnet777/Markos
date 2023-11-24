@@ -89,9 +89,9 @@ def check_availability(request, start_date, end_date):
     types_of_rooms = {}
     for room in available_rooms:
         types_of_rooms[room.room_profile.name] = types_of_rooms.get(room.room_profile,0) +1
-    # data = serializers.serialize('json', [types_of_rooms])
+    data = serializers.serialize('json', available_rooms)
     print(types_of_rooms)
-    return HttpResponse([types_of_rooms], status=status.HTTP_200_OK) 
+    return HttpResponse(data, status=status.HTTP_200_OK) 
 
 def check_payment(request,unique_id):
     try:
