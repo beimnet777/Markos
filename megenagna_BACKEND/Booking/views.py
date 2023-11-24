@@ -9,6 +9,7 @@ import http.client
 from django.db.models import Q
 from django.core import serializers
 from datetime import datetime
+import json
 
 # Create your views here.
 
@@ -86,11 +87,14 @@ def check_availability(request, start_date, end_date):
     overlapping_bookings = Booking.objects.filter(Q(start_date__lt=end_date) & Q(end_date__gt=start_date)).values('room')
     available_rooms = Room.objects.exclude(id__in=overlapping_bookings)
     print(available_rooms)
-    types_of_rooms = {}
-    for room in available_rooms:
-        types_of_rooms[room.room_profile.name] = types_of_rooms.get(room.room_profile,0) +1
-    data = serializers.serialize('json', available_rooms)
-    print(types_of_rooms)
+    rooms = []
+    for r in available_rooms:
+        room = {}
+        room["id"] = r.id
+        room["type"] = serializers.serialize('json',[r.room_profile])
+        room["type"] =  json.loads(room["type"])
+        rooms.append(room)
+    data = json.dumps(rooms)
     return HttpResponse(data, status=status.HTTP_200_OK) 
 
 def check_payment(request,unique_id):
