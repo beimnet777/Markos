@@ -97,6 +97,7 @@ def check_availability(request, start_date, end_date):
     data = json.dumps(rooms)
     return HttpResponse(data, status=status.HTTP_200_OK) 
 
+
 def check_payment(request,unique_id):
     try:
         conn = http.client.HTTPSConnection("api.chapa.co")

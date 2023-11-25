@@ -7,6 +7,9 @@ from django.core.mail import send_mail
 from django.core import serializers
 from datetime import datetime
 from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+from django.contrib.staticfiles import finders
 
 import json
 # Create your views here.
@@ -28,15 +31,21 @@ def collect_feedback(request):
     subject = 'Hello from Django'
     html_message = render_to_string('email.html', {'recipient_name': 'John Doe'})
     sender = 'your-email@gmail.com'
-    recipients = [email]
-    
 
+    recipients = [email]
+    email = EmailMultiAlternatives(subject, strip_tags(html_message), to=recipients)
+
+    logo_path = finders.find('images/Nahusenay Hotel.svg')
+    with open(logo_path, 'rb') as f:
+        image_data = f.read()
+    email.attach('logo.svg', image_data, 'image/svg')
+    email.send()
     
 
     new_model = ContactUS(email = email, first_name=first_name, last_name=last_name, message = message, date = date )
     new_model.save()
     data = serializers.serialize('json',[new_model])
-    send_mail(subject, message, sender, recipients, html_message=html_message)
+    # send_mail(subject, message, sender, recipients, html_message=html_message)
     return HttpResponse(data, status=status.HTTP_200_OK)
 
         # return HttpResponse("Successfuly Submitted", status = 200)
