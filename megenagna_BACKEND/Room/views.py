@@ -29,4 +29,4 @@ def allowed_users():
 class RoomProfileView(viewsets.ModelViewSet):
     queryset = RoomProfile.objects.all()
     serializer_class = RoomProfileSerializer 
-    pagination_class = RoomProfilePagination
+    # pagination_class = RoomProfilePagination

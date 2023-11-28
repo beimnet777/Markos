@@ -18,6 +18,7 @@ import json
 def book(request):
    
     request_body = request.body.decode('utf-8')
+    
     json_data = json.loads(request_body)
     #getting id for the room
     id = int (json_data['id'])
