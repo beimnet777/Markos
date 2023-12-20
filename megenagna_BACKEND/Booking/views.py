@@ -59,7 +59,7 @@ def book(request):
     "phone_number": booking.customer_phone_number,
     "tx_ref":  "N-H-S-"+str(booking.id),
     "callback_url": "https://webhook.site/077164d6-29cb-40df-ba29-8a00e59a7e60",
-    "return_url": "http://127.0.0.1:8000/booking/book/",
+    "return_url": "http://localhost:3000/confirmation",
     "customization[title]": "Payment for my favourite merchant",
     "customization[description]": "I love online payments"
     })
