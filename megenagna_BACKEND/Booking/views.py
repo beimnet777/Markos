@@ -85,7 +85,7 @@ def book(request):
 
 @api_view(['Get'])
 def check_availability(request, start_date, end_date):
-    overlapping_bookings = Booking.objects.filter(Q(start_date__lt=end_date) & Q(end_date__gt=start_date)).values('room')
+    overlapping_bookings = Booking.objects.filter(Q(start_date__lt=end_date) & Q(end_date__gt=start_date), status='accepted' ).values('room')
     available_rooms = Room.objects.exclude(id__in=overlapping_bookings)
     print(available_rooms)
     rooms = []
@@ -100,25 +100,24 @@ def check_availability(request, start_date, end_date):
 
 
 def check_payment(request,unique_id):
-    try:
-        conn = http.client.HTTPSConnection("api.chapa.co")
-        payload = ''
-        headers = {
-            'Authorization': 'Bearer CHASECK_TEST-heQb56CbxYnUmhaJciSft8k2sirz3bO7'
-        }
-        conn.request("GET", "/v1/transaction/verify/"+ "N-H-S-"+str(unique_id), payload, headers)
-        res = conn.getresponse()
-        data = res.read()
-        data = data.decode('utf-8')
-        data = json.loads(data)
-        booking  = Booking.objects.get(id = unique_id)
-        print("***************************", data['data'], booking.payment_status)
-        booking.payment_status = "approved" if data['data'] != None else "rejected"
-        booking.save()
-        response = serializers.serialize('json', [booking])
-        return HttpResponse(data, status=status.HTTP_200_OK)
-    except:
-        return "suii"
+    
+    conn = http.client.HTTPSConnection("api.chapa.co")
+    payload = ''
+    headers = {
+        'Authorization': 'Bearer CHASECK_TEST-heQb56CbxYnUmhaJciSft8k2sirz3bO7'
+    }
+    conn.request("GET", "/v1/transaction/verify/"+ str(unique_id), payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    data = data.decode('utf-8')
+    data = json.loads(data)
+    booking  = Booking.objects.get(id = unique_id[6:])
+    print("***************************", data['data'], booking.payment_status)
+    booking.payment_status = "approved" if data['data'] != None else "rejected"
+    booking.save()
+    response = serializers.serialize('json', [booking])
+    return HttpResponse(data, status=status.HTTP_200_OK)
+    
 
 
     
