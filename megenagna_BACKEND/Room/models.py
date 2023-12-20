@@ -9,7 +9,11 @@ class RoomProfile(models.Model):
     availability_status = models.BooleanField(default=True)
     price = models.IntegerField(null=True)
     services = models.TextField(max_length= 200)
-    image = models.ImageField(upload_to='room_image/')
+    image1 = models.ImageField(upload_to='room_image/')
+    image2 = models.ImageField(upload_to='room_image/')
+    image3 = models.ImageField(upload_to='room_image/')
+    image4 = models.ImageField(upload_to='room_image/')
+    image5 = models.ImageField(upload_to='room_image/')  # since we are using sql lite , array values in the database are not allowed
 
     def __str__(self):
         return self.name
