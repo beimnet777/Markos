@@ -4,7 +4,6 @@ from rest_framework import viewsets
 from Room.views import allowed_users
 from .models import Blog
 from .serializer import BlogSerializer
-from .pagination import BlogPagination
 
 # Create your views here.
 
@@ -17,7 +16,6 @@ from .pagination import BlogPagination
 class BlogView(viewsets.ModelViewSet):
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
-    pagination_class = BlogPagination
     def get_queryset(self):
         queryset = super().get_queryset()
         # Specify the field to sort by (replace 'field_name' with your actual field name)
