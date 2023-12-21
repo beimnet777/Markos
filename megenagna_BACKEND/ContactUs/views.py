@@ -21,8 +21,7 @@ def collect_feedback(request):
     
     json_data = json.loads(request_body)
     
-    first_name = json_data.get('first_name')
-    last_name = json_data.get('last_name')
+    name = json_data.get('first_name')
     email = json_data.get('email')
     print(email, "**************88")
     message = json_data.get('message')
@@ -57,7 +56,7 @@ def collect_feedback(request):
     
 
 
-    new_model = ContactUS(email = email, first_name=first_name, last_name=last_name, message = message, date = date )
+    new_model = ContactUS(email = email, name=name, message = message, date = date )
     new_model.save()
     data = serializers.serialize('json',[new_model])
     # send_mail(subject, message, sender, recipients, html_message=html_message)
