@@ -21,7 +21,7 @@ def collect_feedback(request):
     
     json_data = json.loads(request_body)
     
-    name = json_data.get('first_name')
+    name = json_data.get('name')
     email = json_data.get('email')
     print(email, "**************88")
     message = json_data.get('message')
