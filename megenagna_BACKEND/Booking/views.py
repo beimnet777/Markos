@@ -11,6 +11,11 @@ from django.core import serializers
 from datetime import datetime
 import json
 
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+from django.contrib.staticfiles import finders
+
 # Create your views here.
 
 
@@ -85,7 +90,7 @@ def book(request):
 
 @api_view(['Get'])
 def check_availability(request, start_date, end_date):
-    overlapping_bookings = Booking.objects.filter(Q(start_date__lt=end_date) & Q(end_date__gt=start_date), status='accepted' ).values('room')
+    overlapping_bookings = Booking.objects.filter((Q(start_date__lte=end_date) & Q(end_date__gte=start_date)),payment_status='approved' ).values('room')
     available_rooms = Room.objects.exclude(id__in=overlapping_bookings)
     print(available_rooms)
     rooms = []
@@ -100,23 +105,50 @@ def check_availability(request, start_date, end_date):
 
 
 def check_payment(request,unique_id):
-    
-    conn = http.client.HTTPSConnection("api.chapa.co")
-    payload = ''
-    headers = {
-        'Authorization': 'Bearer CHASECK_TEST-heQb56CbxYnUmhaJciSft8k2sirz3bO7'
-    }
-    conn.request("GET", "/v1/transaction/verify/"+ str(unique_id), payload, headers)
-    res = conn.getresponse()
-    data = res.read()
-    data = data.decode('utf-8')
-    data = json.loads(data)
-    booking  = Booking.objects.get(id = unique_id[6:])
-    print("***************************", data['data'], booking.payment_status)
-    booking.payment_status = "approved" if data['data'] != None else "rejected"
-    booking.save()
-    response = serializers.serialize('json', [booking])
-    return HttpResponse(data, status=status.HTTP_200_OK)
+    try:
+        conn = http.client.HTTPSConnection("api.chapa.co")
+        payload = ''
+        headers = {
+            'Authorization': 'Bearer CHASECK_TEST-heQb56CbxYnUmhaJciSft8k2sirz3bO7'
+        }
+        conn.request("GET", "/v1/transaction/verify/"+ str(unique_id), payload, headers)
+        res = conn.getresponse()
+        data = res.read()
+        data = data.decode('utf-8')
+        data = json.loads(data)
+        booking  = Booking.objects.get(id = unique_id[6:])
+        print("***************************", data['data'], booking.payment_status)
+        booking.payment_status = "approved" if data['data'] != None else "rejected"
+        booking.save()
+        response = serializers.serialize('json', [booking])
+
+        subject = 'Hello from Django'
+        html_message = render_to_string('email.html', {'recipient_name': 'John Doe'})
+
+        context = {
+                "welcome_message": "Welcome to Nahusenay's Hotel", 
+                "link_app": "google.com"
+            }
+
+
+
+        recipients = [booking.customer_email]
+        html_message = render_to_string("email.html", context=context)
+        plain_message = strip_tags(html_message)
+
+        message = EmailMultiAlternatives(
+            subject = subject, 
+            body = plain_message,
+            from_email = None ,
+            to= recipients
+        )
+
+        message.attach_alternative(html_message, "text/html")
+        message.send()
+
+        return HttpResponse(response, status=status.HTTP_200_OK)
+    except:
+        return HttpResponse(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
 

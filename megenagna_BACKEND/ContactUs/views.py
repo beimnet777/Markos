@@ -24,6 +24,7 @@ def collect_feedback(request):
     first_name = json_data.get('first_name')
     last_name = json_data.get('last_name')
     email = json_data.get('email')
+    print(email, "**************88")
     message = json_data.get('message')
     date = json_data.get('date')
     date = datetime.strptime(date, "%Y-%m-%d")
@@ -32,15 +33,29 @@ def collect_feedback(request):
     html_message = render_to_string('email.html', {'recipient_name': 'John Doe'})
     sender = 'your-email@gmail.com'
 
-    recipients = [email]
-    email = EmailMultiAlternatives(subject, strip_tags(html_message), to=recipients)
+    context = {
+            "welcome_message": "Welcome to Nahusenay's Hotel", 
+            "link_app": "google.com"
+        }
 
-    logo_path = finders.find('images/Nahusenay Hotel.svg')
-    with open(logo_path, 'rb') as f:
-        image_data = f.read()
-    email.attach('logo.svg', image_data, 'image/svg')
-    email.send()
+
+
+    recipients = [email]
+    html_message = render_to_string("email.html", context=context)
+    plain_message = strip_tags(html_message)
+
+    message = EmailMultiAlternatives(
+        subject = subject, 
+        body = plain_message,
+        from_email = None ,
+        to= recipients
+    )
+
+    message.attach_alternative(html_message, "text/html")
+    message.send()
+
     
+
 
     new_model = ContactUS(email = email, first_name=first_name, last_name=last_name, message = message, date = date )
     new_model.save()
