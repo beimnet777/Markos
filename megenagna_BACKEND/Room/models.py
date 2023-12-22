@@ -13,7 +13,8 @@ class RoomProfile(models.Model):
     image2 = models.ImageField(upload_to='room_image/')
     image3 = models.ImageField(upload_to='room_image/')
     image4 = models.ImageField(upload_to='room_image/')
-    image5 = models.ImageField(upload_to='room_image/')  # since we are using sql lite , array values in the database are not allowed
+    image5 = models.ImageField(upload_to='room_image/') 
+    image6 = models.ImageField(upload_to='room_image/')  # since we are using sql lite , array values in the database are not allowed
 
     def __str__(self):
         return self.name
