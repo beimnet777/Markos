@@ -126,8 +126,8 @@ def check_payment(request,unique_id):
         html_message = render_to_string('email.html', {'recipient_name': 'John Doe'})
 
         context = {
-                "welcome_message": "Welcome to Nahusenay's Hotel", 
-                "link_app": "google.com"
+                "welcome_message": "Thank you for choosing Nahusenay's Hotel", 
+                "name": booking.customer_first_name +" "+ booking.customer_last_name
             }
 
 

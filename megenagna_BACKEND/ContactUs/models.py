@@ -8,4 +8,4 @@ class ContactUS( models.Model ):
     date = models.DateField()
 
     def __str__(self) -> str:
-        return  self.name+"   "+ str(self.date)
+        return  self.name+ "         "  + str(self.date)

@@ -34,7 +34,7 @@ def collect_feedback(request):
 
     context = {
             "welcome_message": "Welcome to Nahusenay's Hotel", 
-            "link_app": "google.com"
+            "name": name,
         }
 
 
