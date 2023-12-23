@@ -148,6 +148,7 @@ def check_payment(request,unique_id):
 
         return HttpResponse(response, status=status.HTTP_200_OK)
     except:
+        print("***************")
         return HttpResponse(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 

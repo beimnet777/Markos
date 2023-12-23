@@ -28,7 +28,7 @@ def collect_feedback(request):
     date = json_data.get('date')
     date = datetime.strptime(date, "%Y-%m-%d")
 
-    subject = 'Hello from Django'
+    subject = 'Thank you for reaching out to us'
     html_message = render_to_string('email.html', {'recipient_name': 'John Doe'})
     sender = 'your-email@gmail.com'
 
