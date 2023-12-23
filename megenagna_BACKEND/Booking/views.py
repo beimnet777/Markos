@@ -122,18 +122,18 @@ def check_payment(request,unique_id):
         booking.save()
         response = serializers.serialize('json', [booking])
 
-        subject = 'Hello from Django'
+        subject = 'Nahusenay Hotel Reservation Confirmation'
         html_message = render_to_string('email.html', {'recipient_name': 'John Doe'})
 
         context = {
-                "welcome_message": "Thank you for choosing Nahusenay's Hotel", 
+                "welcome_message": "Thank you for choosing Nahusenay Hotel", 
                 "name": booking.customer_first_name +" "+ booking.customer_last_name
             }
 
 
 
         recipients = [booking.customer_email]
-        html_message = render_to_string("email.html", context=context)
+        html_message = render_to_string("email2.html", context=context)
         plain_message = strip_tags(html_message)
 
         message = EmailMultiAlternatives(
